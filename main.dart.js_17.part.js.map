@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "engine": "v2",
+  "file": "main.dart.js_17.part.js",
+  "sourceRoot": "",
+  "sources": ["../../../../lib/src/controls/layout/page.dart","/opt/hostedtoolcache/flutter/3.35.4-stable/x64/packages/flutter/lib/src/widgets/basic.dart","/opt/hostedtoolcache/flutter/3.35.4-stable/x64/packages/flutter/lib/src/rendering/sliver.dart","org-dartlang-sdk:///lib/ui/geometry.dart","/opt/hostedtoolcache/flutter/3.35.4-stable/x64/packages/flutter/lib/src/rendering/object.dart","/opt/hostedtoolcache/flutter/3.35.4-stable/x64/packages/flutter/lib/src/painting/edge_insets.dart"],
+  "names": ["ScaffoldPage.withPadding","RenderSliverSingleBoxAdapter.setupParentData","SliverPhysicalParentData","RenderSliverSingleBoxAdapter.setChildParentData","RenderSliverSingleBoxAdapter.hitTestChildren","RenderSliverSingleBoxAdapter.childMainAxisPosition","RenderSliverSingleBoxAdapter.applyPaintTransform","RenderSliverSingleBoxAdapter.paint","RenderSliverToBoxAdapter.performLayout","_RenderSliverSingleBoxAdapter&RenderSliver&RenderObjectWithChildMixin.attach","_RenderSliverSingleBoxAdapter&RenderSliver&RenderObjectWithChildMixin.detach","SliverToBoxAdapter.createRenderObject","RenderObject","RenderSliverToBoxAdapter","RenderSliverSingleBoxAdapter","ScaffoldPage.withPadding.<anonymous function>","_RenderSliverSingleBoxAdapter&RenderSliver&RenderObjectWithChildMixin&RenderSliverHelpers","_RenderSliverSingleBoxAdapter&RenderSliver&RenderObjectWithChildMixin","RenderSliver","","_layerHandle","axis","child","constraints","geometry","height","only","paintOffset","width"],
+  "mappings": "A;;GAoDEA,MAAwBA;AAAxBA,gBCi+PMA,SDz9PUA,wBARhBA,AAoBMA,C;;;;;;;;;;;;;;;;;;;;;;;;;;;;EEg1DDC,UACOA,oBAv0BRA,CAw0BMA,aAn0BkBC,GAq0B5BD,C;GAMKE,iBAKoDA;CAAUA;AAAEA;AAC7BA,aACxBA,IACAA,cCt4DVA,aD04DSA,IAA0BA,IAAwBA;AAFzCA;OCx4DlBA,WD64DSA,IAA0BA,IAAwBA;AADvCA;OC54DpBA,YDg5DyCA;AAApBA;OCh5DrBA,cDi5D6CA;AAAzBA;QAbMA,QAAdA,IAelBA,C;EAGKC,kBEsiEmBA;AFhiEtBA,WACEA,OAAOA,SACYA,eAOvBA;AADEA,QACFA,C;EAGOC,IACLA,OAxpBqDA,MAAZA,6BAwpBrBA,EACtBA,C;EAGKC,aAEoDA;CAAUA;AAAEA,SACnDA,KAClBA,C;EAGKC,kBEwgEmBA;gBF/pFQA,GAwpBDA,OAEhBA;CAAUA;AACrBA,OAA2BA,OADJA,QAC6BA,KAExDA,C;;EAoBKC,GACHA;IE6+DsBA,YFlnFtBA,KAsoB4BA;AAC1BA,MAuBJA,CAvtBuDA,QAAZA;GE2qFnBA;CFx+DjBA;KAASA;AAhkDCA,aAAoBA,cAkkDPA,GEs+DNA,QDh4HJA;AD05DeA;OACPA,GEq+DJA,QD/3HHA;AD05DYA;QAFJA,OAIKA;AACLA;AAIhBA,YAOqBA,KAAoCA;CA3pBpEA;GEknFsBA;CFr9DEA;AAAxBA,YACFA,C;;EEg+DKC,IACGA;;MACNA;kBACFA,C;EAGKC,GACGA;UACNA;iBACFA,C;;;EHxRyBC,IC9uDzBA,qBEs9BiDC;AFt9BjDC;AA3FOC;ADy0D8DH,QAA0BA,C;;;EDjqH/EI,IAMmBA,gBACFA;AANxBA,OCqjEHA,QI57CAA,uBLjnBYA,QAEVA,C",
+  "x_org_dartlang_dart2js": {
+    "minified_names": {
+      "global": "",
+      "instance": ""
+    },
+    "frames": "2KA2DiBmBS;4aE+1DQAC;aAAAAAAn0BKQG,A;6EAq1BJRa;yBAIEAW;2BAICAY;mBACDAc;qDAWpBGI;mEAaICmC;uEAYJDoB;AAAiBEG;mGA0BjBFY;AACFEK;WAGyCDsC;AAC3CDK;0BAC+CD2B;GAC1BCQ;AAAYMG;gBACdNQ;AAAYGG;6FAO/BDS;AASmBFK;6LDktDgDHqBC9uDrEAAA5FAAAAHaAAAAAAAApnBAAAEyqDoCCW,A,A,A,A,A,AA7oCjDDO,AF2FAAAA4FAAY,A,A;0FFl7DgBAQ;AAGqBOuB;"
+  }
+}
