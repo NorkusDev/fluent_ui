@@ -170,7 +170,6 @@ class DatePicker extends StatefulWidget {
   ///   on the current locale
   final List<int>? fieldFlex;
 
-
   // The Style of picker
   final TextStyle? style;
 
@@ -370,8 +369,8 @@ class DatePickerState extends State<DatePicker> {
                           '$locale',
                         ).format(widget.selected!).uppercaseFirst(),
                   locale: locale,
+                  style: widget.style,
                   textAlign: TextAlign.center,
-                  style: style,
                 ),
               ),
             ),
@@ -386,7 +385,7 @@ class DatePickerState extends State<DatePicker> {
                     : DateFormat.d(
                         '$locale',
                       ).format(DateTime(0, 0, widget.selected!.day)),
-                style: style,
+                style: widget.style,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -401,7 +400,7 @@ class DatePickerState extends State<DatePicker> {
                     : DateFormat.y(
                         '$locale',
                       ).format(DateTime(widget.selected!.year)),
-                style: style,
+                style: widget.style,
                 textAlign: TextAlign.center,
               ),
             ),
