@@ -44,6 +44,7 @@ class CalendarDatePicker extends CalendarView {
     this.verticalOffset,
     this.transitionBuilder,
     this.closeOnSelection = true,
+    this.style,
   });
 
   /// The text that will be displayed when no date is selected.
@@ -73,6 +74,9 @@ class CalendarDatePicker extends CalendarView {
   ///
   /// Defaults to `true`.
   final bool closeOnSelection;
+
+  /// Style
+  final TextStyle? style;
 
   @override
   State<CalendarView> createState() => CalendarDatePickerState();
@@ -192,7 +196,7 @@ class CalendarDatePickerState extends CalendarViewState {
               final localizations = FluentLocalizations.of(context);
 
               return widget.placeholderText ?? localizations.pickADate;
-            }()),
+            }(), style: widget.style),
             const WindowsIcon(WindowsIcons.calendar),
           ],
         ),

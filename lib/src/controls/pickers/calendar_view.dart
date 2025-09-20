@@ -1304,7 +1304,7 @@ class _CalendarHeader extends StatelessWidget {
               aspectRatio: 1,
               child: IconButton(
                 icon: const Center(
-                  child: WindowsIcon(WindowsIcons.caret_up_solid8, size: 10),
+                  child: WindowsIcon(WindowsIcons.caret_left_solid8, size: 10),
                 ),
                 onPressed: onPrevious,
               ),
@@ -1313,7 +1313,7 @@ class _CalendarHeader extends StatelessWidget {
               aspectRatio: 1,
               child: IconButton(
                 icon: const Center(
-                  child: WindowsIcon(WindowsIcons.caret_down_solid8, size: 10),
+                  child: WindowsIcon(WindowsIcons.caret_right_solid8, size: 10),
                 ),
                 onPressed: onNext,
               ),
