@@ -1,3 +1,46 @@
+## [next]
+
+- refactor: Consistent theme classes
+- fix: `CalendarDatePicker` throws state error when selecting date ([#1251](https://github.com/bdlukaa/fluent_ui/issues/1251))
+- feat: Named constructors for `InfoBar` ([#1247](https://github.com/bdlukaa/fluent_ui/pull/1247))
+  ```dart
+  InfoBar.info(title: Text(error));
+  InfoBar.warning(title: Text(error));
+  InfoBar.success(title: Text(error));
+  InfoBar.error(title: Text(error));
+  ```
+- refactor: Expose `TooltipState`
+- fix: `NumberBox` calls `onChanged()` when clicked on ([#1196](https://github.com/bdlukaa/fluent_ui/issues/1196))
+- feat: Add `NumberBox.parser`, which allows to use a custom parse function for the number box. ([#1166](https://github.com/bdlukaa/fluent_ui/issues/1166))
+- fix: Correctly lerp between theme properties ([#953](https://github.com/bdlukaa/fluent_ui/issues/953))
+- fix: Correctly apply theme durations to animations ([#1231](https://github.com/bdlukaa/fluent_ui/issues/1231))
+- feat: Apply text height on `Typography`
+- refactor: Encourage usage of `EdgeInsetsDirectional` instead of `EdgeInsets`
+- refactor: Remove `BottomNavigationBar` and all its related widgets
+- **MINOR BREAKING** refactor: Remove `Brightness.isLight`, `Brightness.isDark` and `Brightness.opposite` extension methods. Use `switch` statements instead.
+- feat: Add latest color resources from Microsoft UI XAML.
+- refactor(perf): Optimize animation handling in Scrollbar, NavigationView, Acrylic and buttons.
+- refactor(perf): Reduce calls to `setState` and frames scheduling in several widgets.
+- **BREAKING CHANGE** `NavigationView` reworked to be more flexible and match the Windows UI 3 specs.
+  - Renamed `PaneDisplayMode.open` to `PaneDisplayMode.expanded`.
+  - Renamed `appBar` to `titleBar`.
+  - Removed `NavigationAppBar` class. Any widget can now be a title bar.
+  - Introduced the `TitleBar` widget, which matches the design and functionality of a Window title bar.
+  - Added `PaneBackButton` widget, a button that allows the user to pop the current route.
+  - Added `PaneToggleButton` widget, a button that opens or close the navigation view pane. ([#1051](https://github.com/bdlukaa/fluent_ui/issues/1051))
+  - Added `NavigationPane.toggleButtonPosition`, which sets the preferred position of the toggle button. ([#669](https://github.com/bdlukaa/fluent_ui/issues/669))
+  - `PaneItem`s are now lazy-loaded, improving overall performance ([#742](https://github.com/bdlukaa/fluent_ui/issues/742))
+  - Updated `StickyNavigationIndicator` animation to match Win UI 3 specs ([#540](https://github.com/bdlukaa/fluent_ui/issues/540))
+  - Updated colors and margins to match Win UI 3 specs ([#1181](https://github.com/bdlukaa/fluent_ui/issues/1181))
+  - `PaneItemExpander` now supports deep nesting ([#1019](https://github.com/bdlukaa/fluent_ui/issues/1019))
+  - `PaneItemExpander` no longer resets itself when the tree is updated. ([#876](https://github.com/bdlukaa/fluent_ui/issues/876))
+  - `PaneItemExpander` doesn't require a body anymore. If no body is provided, the item will not be selectable. ([#1189](https://github.com/bdlukaa/fluent_ui/issues/1189))
+  - Keyboard Navigation was enhanced. Items are visible in the scroll view when focused.
+  - Updated content management to only display the current visible item at once. ([#1101](https://github.com/bdlukaa/fluent_ui/issues/1101))
+  - Expose `NavigationView` important data using `NavigationView.dataOf(context)`
+  - Added `NavigationPane.acrylicDisabled`, which allows disabling acrylic material effect of the pane overlays
+
+
 ## 4.13.0
 
 - fix: NavigationView transition when in top ([#1220](https://github.com/bdlukaa/fluent_ui/pull/1220))

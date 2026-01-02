@@ -1,3 +1,4 @@
+import 'package:example/main.dart';
 import 'package:example/widgets/card_highlight.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
@@ -15,11 +16,11 @@ class NavigationViewPage extends StatefulWidget {
 
 class _NavigationViewPageState extends State<NavigationViewPage>
     with PageMixin {
-  static const double itemHeight = 500.0;
+  static const double itemHeight = 500;
 
   int topIndex = 0;
 
-  PaneDisplayMode displayMode = PaneDisplayMode.open;
+  PaneDisplayMode displayMode = PaneDisplayMode.expanded;
   String pageTransition = 'Default';
   static const List<String> pageTransitions = [
     'Default',
@@ -33,96 +34,12 @@ class _NavigationViewPageState extends State<NavigationViewPage>
     'Sticky': const StickyNavigationIndicator(),
     'End': const EndNavigationIndicator(),
   };
+  bool hasTopBar = true;
 
-  List<NavigationPaneItem> items = [
-    PaneItem(
-      icon: const WindowsIcon(WindowsIcons.home),
-      title: const Text('Home'),
-      body: const _NavigationBodyItem(),
-      onTap: () => debugPrint('Tapped home'),
-    ),
-    PaneItemSeparator(),
-    PaneItem(
-      icon: const WindowsIcon(WindowsIcons.trackers),
-      title: const Text('Track orders'),
-      infoBadge: const InfoBadge(source: Text('8')),
-      body: const _NavigationBodyItem(
-        header: 'Badging',
-        content: Text(
-          'Badging is a non-intrusive and intuitive way to display '
-          'notifications or bring focus to an area within an app - '
-          'whether that be for notifications, indicating new content, '
-          'or showing an alert. An InfoBadge is a small piece of UI '
-          'that can be added into an app and customized to display a '
-          'number, icon, or a simple dot.',
-        ),
-      ),
-      onTap: () => debugPrint('Tapped track orders'),
-    ),
-    PaneItem(
-      icon: const WindowsIcon(WindowsIcons.disable_updates),
-      title: const Text('Disabled Item'),
-      body: const _NavigationBodyItem(),
-      enabled: false,
-      onTap: () => debugPrint('Tapped disabled'),
-    ),
-    PaneItemHeader(header: const Text('Apps')),
-    PaneItemExpander(
-      icon: const WindowsIcon(WindowsIcons.switch_user),
-      title: const Text('Account'),
-      initiallyExpanded: true,
-      body: const _NavigationBodyItem(
-        header: 'PaneItemExpander',
-        content: Text(
-          'Some apps may have a more complex hierarchical structure '
-          'that requires more than just a flat list of navigation '
-          'items. You may want to use top-level navigation items to '
-          'display categories of pages, with children items displaying '
-          'specific pages. It is also useful if you have hub-style '
-          'pages that only link to other pages. For these kinds of '
-          'cases, you should create a hierarchical NavigationView.',
-        ),
-      ),
-      onTap: () => debugPrint('Tapped account'),
-      items: [
-        PaneItem(
-          icon: const WindowsIcon(WindowsIcons.mail),
-          title: const Text('Mail'),
-          body: const _NavigationBodyItem(),
-          onTap: () => debugPrint('Tapped mail'),
-        ),
-        PaneItem(
-          icon: const WindowsIcon(WindowsIcons.calendar),
-          title: const Text('Calendar'),
-          body: const _NavigationBodyItem(),
-          onTap: () => debugPrint('Tapped calendar'),
-        ),
-      ],
-    ),
-    PaneItemWidgetAdapter(
-      child: Builder(
-        builder: (context) {
-          if (NavigationView.of(context).displayMode ==
-              PaneDisplayMode.compact) {
-            return const FlutterLogo();
-          }
-          return ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 200.0),
-            child: const Row(
-              children: [
-                FlutterLogo(),
-                SizedBox(width: 6.0),
-                Text('This is a custom widget'),
-              ],
-            ),
-          );
-        },
-      ),
-    ),
-  ];
+  List<NavigationPaneItem> items = [];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return ScaffoldPage.scrollable(
       header: const PageHeader(title: Text('NavigationView')),
       children: [
@@ -131,22 +48,22 @@ class _NavigationViewPageState extends State<NavigationViewPage>
           'It adapts to a variety of screen sizes and supports both top and left '
           'navigation styles.',
         ),
-        const SizedBox(height: 10.0),
+        const SizedBox(height: 10),
         ...buildDisplayMode(
           PaneDisplayMode.top,
           'Top display mode',
           'The pane is positioned above the content.',
         ),
         ...buildDisplayMode(
-          PaneDisplayMode.open,
+          PaneDisplayMode.expanded,
           'Open display mode',
           'The pane is expanded and positioned to the left of the content.',
         ),
         ...buildDisplayMode(
           PaneDisplayMode.compact,
           'Compact display mode',
-          'The pane shows only icons until opened and is positioned to the left '
-              'of the content. When opened, the pane overlays the content.',
+          'The pane shows only icons until expanded and is positioned to the left '
+              'of the content. When expanded, the pane overlays the content.',
         ),
         ...buildDisplayMode(
           PaneDisplayMode.minimal,
@@ -159,29 +76,29 @@ class _NavigationViewPageState extends State<NavigationViewPage>
   }
 
   List<Widget> buildDisplayMode(
-    PaneDisplayMode displayMode,
-    String title,
-    String desc,
+    final PaneDisplayMode displayMode,
+    final String title,
+    final String desc,
   ) {
     if (displayMode != this.displayMode) return [];
     return [
       Wrap(
-        runSpacing: 10.0,
-        spacing: 10.0,
+        runSpacing: 10,
+        spacing: 10,
         children: [
           InfoLabel(
             label: 'Display mode',
             child: ComboBox<PaneDisplayMode>(
               value: displayMode,
               items: ([...PaneDisplayMode.values]..remove(PaneDisplayMode.auto))
-                  .map((mode) {
+                  .map((final mode) {
                     return ComboBoxItem(
                       value: mode,
                       child: Text(mode.name.uppercaseFirst()),
                     );
                   })
                   .toList(),
-              onChanged: (mode) =>
+              onChanged: (final mode) =>
                   setState(() => this.displayMode = mode ?? displayMode),
             ),
           ),
@@ -189,10 +106,10 @@ class _NavigationViewPageState extends State<NavigationViewPage>
             label: 'Page Transition',
             child: ComboBox<String>(
               items: pageTransitions
-                  .map((e) => ComboBoxItem(value: e, child: Text(e)))
+                  .map((final e) => ComboBoxItem(value: e, child: Text(e)))
                   .toList(),
               value: pageTransition,
-              onChanged: (transition) =>
+              onChanged: (final transition) =>
                   setState(() => pageTransition = transition ?? pageTransition),
             ),
           ),
@@ -200,10 +117,11 @@ class _NavigationViewPageState extends State<NavigationViewPage>
             label: 'Indicator',
             child: ComboBox<String>(
               items: indicators.keys
-                  .map((e) => ComboBoxItem(value: e, child: Text(e)))
+                  .map((final e) => ComboBoxItem(value: e, child: Text(e)))
                   .toList(),
               value: indicator,
-              onChanged: (i) => setState(() => indicator = i ?? indicator),
+              onChanged: (final i) =>
+                  setState(() => indicator = i ?? indicator),
             ),
           ),
           InfoLabel(
@@ -212,7 +130,7 @@ class _NavigationViewPageState extends State<NavigationViewPage>
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).push(
                   FluentPageRoute(
-                    builder: (context) {
+                    builder: (final context) {
                       return const NavigationViewShellRoute();
                     },
                   ),
@@ -228,6 +146,16 @@ class _NavigationViewPageState extends State<NavigationViewPage>
                 context.push('/navigation_view');
               },
               child: const Text('Open in a new shell route'),
+            ),
+          ),
+          InfoLabel(
+            label: '',
+            child: Checkbox(
+              checked: hasTopBar,
+              onChanged: (final value) {
+                setState(() => hasTopBar = value ?? false);
+              },
+              content: const Text('Has top bar'),
             ),
           ),
         ],
@@ -271,18 +199,9 @@ List<NavigationPaneItem> items = [
   PaneItemExpander(
     icon: const WindowsIcon(WindowsIcons.account_management),
     title: const Text('Account'),
-    body: const _NavigationBodyItem(
-      header: 'PaneItemExpander',
-      content: Text(
-        'Some apps may have a more complex hierarchical structure '
-        'that requires more than just a flat list of navigation '
-        'items. You may want to use top-level navigation items to '
-        'display categories of pages, with children items displaying '
-        'specific pages. It is also useful if you have hub-style '
-        'pages that only link to other pages. For these kinds of '
-        'cases, you should create a hierarchical NavigationView.',
-      ),
-    ),
+    // body is null - clicking only expands/collapses, doesn't navigate
+    // See: https://github.com/bdlukaa/fluent_ui/issues/1189
+    body: null,
     items: [
       PaneItemHeader(header: const Text('Apps')),
       PaneItem(
@@ -330,10 +249,10 @@ NavigationView(
     onItemPressed: (index) {
       // Do anything you want to do, such as:
       if (index == topIndex) {
-        if (displayMode == PaneDisplayMode.open) {
+        if (displayMode == PaneDisplayMode.expanded) {
           setState(() => this.displayMode = PaneDisplayMode.compact);
         } else if (displayMode == PaneDisplayMode.compact) {
-          setState(() => this.displayMode = PaneDisplayMode.open);
+          setState(() => this.displayMode = PaneDisplayMode.expanded);
         }
       }
     },
@@ -371,28 +290,164 @@ NavigationView(
         child: SizedBox(
           height: itemHeight,
           child: NavigationView(
-            appBar: const NavigationAppBar(title: Text('NavigationView')),
-            onDisplayModeChanged: (mode) {
+            titleBar: hasTopBar
+                ? TitleBar(
+                    icon: const FlutterLogo(),
+                    title: const Text('Windows UI for Flutter'),
+                    subtitle: const Text('Preview'),
+                    content: Container(
+                      margin: const EdgeInsetsDirectional.symmetric(
+                        vertical: 6,
+                      ),
+                      constraints: const BoxConstraints(maxWidth: 380),
+                      child: Builder(
+                        builder: (context) {
+                          final allItems = NavigationView.dataOf(context)
+                              .pane!
+                              .allItems
+                              .where(
+                                (i) =>
+                                    i is PaneItem &&
+                                    i is! PaneItemExpander &&
+                                    i.body != null &&
+                                    i.enabled,
+                              )
+                              .cast<PaneItem>();
+                          return AutoSuggestBox(
+                            items: [
+                              for (final item in allItems)
+                                AutoSuggestBoxItem<String>(
+                                  value: (item.title! as Text).data,
+                                  label: (item.title! as Text).data!,
+                                  onSelected: () {
+                                    NavigationView.dataOf(
+                                      context,
+                                    ).pane?.changeTo(item);
+                                  },
+                                ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                    endHeader: const FlutterLogo(),
+                    captionControls: const WindowButtons(),
+                  )
+                : null,
+            onDisplayModeChanged: (final mode) {
               debugPrint('Changed to $mode');
             },
             pane: NavigationPane(
               selected: topIndex,
-              onItemPressed: (index) {
-                // Do anything you want to do, such as:
-                // if (index == topIndex) {
-                //   if (displayMode == PaneDisplayMode.open) {
-                //     setState(() => this.displayMode = PaneDisplayMode.compact);
-                //   } else if (displayMode == PaneDisplayMode.compact) {
-                //     setState(() => this.displayMode = PaneDisplayMode.open);
-                //   }
-                // }
+              onChanged: (final index) {
+                debugPrint('Changed to $index');
+                setState(() => topIndex = index);
               },
-              onChanged: (index) => setState(() => topIndex = index),
               displayMode: displayMode,
               indicator: indicators[indicator],
               header: const Text('Pane Header'),
-              items: items,
+              items: [
+                PaneItem(
+                  icon: const WindowsIcon(WindowsIcons.home),
+                  title: const Text('Home'),
+                  body: const _NavigationBodyItem(),
+                  onTap: () => debugPrint('Tapped home'),
+                ),
+                PaneItemSeparator(),
+                PaneItem(
+                  icon: const WindowsIcon(WindowsIcons.mail),
+                  title: const Text('Track orders'),
+                  infoBadge: const InfoBadge(source: Text('8')),
+                  body: const _NavigationBodyItem(
+                    header: 'Badging',
+                    content: Text(
+                      'Badging is a non-intrusive and intuitive way to display '
+                      'notifications or bring focus to an area within an app - '
+                      'whether that be for notifications, indicating new content, '
+                      'or showing an alert. An InfoBadge is a small piece of UI '
+                      'that can be added into an app and customized to display a '
+                      'number, icon, or a simple dot.',
+                    ),
+                  ),
+                  onTap: () => debugPrint('Tapped track orders'),
+                ),
+                PaneItem(
+                  icon: const WindowsIcon(WindowsIcons.disable_updates),
+                  title: const Text('Disabled Item'),
+                  body: const _NavigationBodyItem(),
+                  enabled: false,
+                  onTap: () => debugPrint('Tapped disabled'),
+                ),
+                PaneItemHeader(header: const Text('Apps')),
+                PaneItemExpander(
+                  icon: const WindowsIcon(WindowsIcons.switch_user),
+                  title: const Text('Account'),
+                  initiallyExpanded: true,
+                  // ignore: avoid_redundant_argument_values
+                  body: null,
+                  onTap: () =>
+                      debugPrint('Tapped account (expander without body)'),
+                  items: [
+                    PaneItem(
+                      icon: const WindowsIcon(WindowsIcons.mail),
+                      title: const Text('Mail'),
+                      body: const _NavigationBodyItem(),
+                      onTap: () => debugPrint('Tapped mail'),
+                    ),
+                    PaneItem(
+                      icon: const WindowsIcon(WindowsIcons.calendar),
+                      title: const Text('Calendar'),
+                      body: const _NavigationBodyItem(),
+                      onTap: () => debugPrint('Tapped calendar'),
+                    ),
+                    PaneItemHeader(header: const Text('Subscriptions')),
+                    PaneItemExpander(
+                      icon: const WindowsIcon(WindowsIcons.payment_card),
+                      title: const Text('Cards'),
+                      body: const _NavigationBodyItem(),
+                      onTap: () => debugPrint('Tapped cards'),
+                      items: [
+                        PaneItem(
+                          icon: const WindowsIcon(WindowsIcons.payment_card),
+                          title: const Text('Credit Card'),
+                          body: const _NavigationBodyItem(),
+                          onTap: () => debugPrint('Tapped credit card'),
+                        ),
+                        PaneItem(
+                          icon: const WindowsIcon(WindowsIcons.payment_card),
+                          title: const Text('Debit Card'),
+                          body: const _NavigationBodyItem(),
+                          onTap: () => debugPrint('Tapped debit card'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                PaneItemWidgetAdapter(
+                  child: Builder(
+                    builder: (final context) {
+                      if (NavigationView.dataOf(context).displayMode ==
+                          PaneDisplayMode.compact) {
+                        return const FlutterLogo();
+                      }
+                      return ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 200),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            FlutterLogo(),
+                            SizedBox(width: 6),
+                            Flexible(child: Text('This is a custom widget')),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                ...items,
+              ],
               footerItems: [
+                PaneItemSeparator(),
                 PaneItem(
                   icon: const WindowsIcon(WindowsIcons.settings),
                   title: const Text('Settings'),
@@ -418,7 +473,7 @@ NavigationView(
             ),
             transitionBuilder: pageTransition == 'Default'
                 ? null
-                : (child, animation) {
+                : (final child, final animation) {
                     switch (pageTransition) {
                       case 'Entrance':
                         return EntrancePageTransition(
@@ -452,20 +507,11 @@ class NavigationViewShellRoute extends StatelessWidget {
   const NavigationViewShellRoute({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return NavigationView(
-      appBar: NavigationAppBar(
-        title: () {
-          const title = Text('NavigationView');
-
-          if (kIsWeb) return title;
-
-          return const DragToMoveArea(child: title);
-        }(),
-        leading: IconButton(
-          icon: const WindowsIcon(WindowsIcons.back),
-          onPressed: () => context.pop(),
-        ),
+      titleBar: TitleBar(
+        title: const Text('NavigationView'),
+        onDragStarted: !kIsWeb ? windowManager.startDragging : null,
       ),
       content: const ScaffoldPage(
         header: PageHeader(title: Text('New Page')),
@@ -482,10 +528,82 @@ class _NavigationBodyItem extends StatelessWidget {
   final Widget? content;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return ScaffoldPage.withPadding(
       header: PageHeader(title: Text(header ?? 'This is a header text')),
-      content: content ?? const SizedBox.shrink(),
+      content:
+          content ??
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final isLargeScreen = constraints.maxWidth > 600;
+              final crossAxisCount = isLargeScreen ? 3 : 2;
+              final itemCount = isLargeScreen ? 9 : 6;
+
+              return GridView.builder(
+                padding: const EdgeInsets.all(16),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 1.2,
+                ),
+                itemCount: itemCount,
+                itemBuilder: (context, index) {
+                  final colors = [
+                    Colors.blue.normal,
+                    Colors.green.normal,
+                    Colors.orange.normal,
+                    Colors.purple.normal,
+                    Colors.red.normal,
+                    Colors.teal.normal,
+                    Colors.magenta.normal,
+                    Colors.yellow.normal,
+                    Colors.blue.dark,
+                  ];
+                  final color = colors[index % colors.length];
+
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            FluentIcons.circle_fill,
+                            size: isLargeScreen ? 48 : 32,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Item ${index + 1}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          if (isLargeScreen)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: Text(
+                                'Large Screen',
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
     );
   }
 }

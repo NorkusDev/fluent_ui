@@ -1,6 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as m;
-import 'package:flutter_markdown/flutter_markdown.dart'
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart'
     deferred as flutter_markdown;
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -24,7 +24,7 @@ class _ChangelogState extends State<Changelog> {
     fetchChangelog();
   }
 
-  void fetchChangelog() async {
+  Future<void> fetchChangelog() async {
     final response = await http.get(
       Uri.parse(
         'https://raw.githubusercontent.com/bdlukaa/fluent_ui/master/CHANGELOG.md',
@@ -42,12 +42,14 @@ class _ChangelogState extends State<Changelog> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theme = FluentTheme.of(context);
     return DeferredWidget(
       flutter_markdown.loadLibrary,
       () => ContentDialog(
-        style: const ContentDialogThemeData(padding: EdgeInsets.zero),
+        style: const ContentDialogThemeData(
+          padding: EdgeInsetsDirectional.zero,
+        ),
         constraints: const BoxConstraints(maxWidth: 600),
         content: () {
           if (changelog == null) return const ProgressRing();
@@ -55,7 +57,7 @@ class _ChangelogState extends State<Changelog> {
             child: flutter_markdown.Markdown(
               shrinkWrap: true,
               data: changelog!
-                  .map<String>((line) {
+                  .map<String>((final line) {
                     if (line.startsWith('## [')) {
                       final version = line
                           .split(']')
@@ -64,7 +66,7 @@ class _ChangelogState extends State<Changelog> {
                       // if (line.split('-').length == 2) {
                       //   print('GO- ${line.split('-')[0]} - ${line.split('-')[1]}');
                       // }
-                      String date = line
+                      var date = line
                           .split('-')
                           .last
                           .replaceAll('[', '')
@@ -87,7 +89,7 @@ class _ChangelogState extends State<Changelog> {
                     return line;
                   })
                   .join('\n'),
-              onTapLink: (text, href, title) {
+              onTapLink: (final text, final href, final title) {
                 launchUrl(Uri.parse(href!));
               },
               styleSheet:
@@ -101,7 +103,7 @@ class _ChangelogState extends State<Changelog> {
                       ),
                     ),
                   ),
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20),
             ),
           );
         }(),
@@ -141,7 +143,7 @@ class _ChangelogState extends State<Changelog> {
 //         //     : atomOneDarkTheme,
 
 //         // Specify padding
-//         padding: const EdgeInsets.all(8),
+//         padding: const EdgeInsetsDirectional.all(8),
 
 //         // Specify text style
 //         // textStyle: GoogleFonts.robotoMono(),
