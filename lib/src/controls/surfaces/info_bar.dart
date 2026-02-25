@@ -437,7 +437,7 @@ class InfoBar extends StatelessWidget {
                 spacing: 6,
                 children: [
                   title,
-                  if (content != null) content,
+                  ?content,
                   if (action != null)
                     Padding(
                       padding: const EdgeInsetsDirectional.only(start: 16),

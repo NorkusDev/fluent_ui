@@ -93,9 +93,11 @@ class _UIEquivalentsState extends State<UIEquivalents> {
       ],
       [
         const Text('RadioButton'),
-        RadioButton(
-          checked: radioChecked,
-          onChanged: (final v) => setState(() => radioChecked = v),
+        RadioGroup<bool>(
+          onChanged: (final v) =>
+              setState(() => radioChecked = v ?? radioChecked),
+          groupValue: true,
+          child: RadioButton(value: radioChecked),
         ),
         RadioGroup<bool>(
           onChanged: (final v) => setState(() => radioChecked = !radioChecked),
@@ -270,7 +272,7 @@ class _UIEquivalentsState extends State<UIEquivalents> {
                     height: 216,
                     padding: const EdgeInsetsDirectional.only(top: 6),
                     margin: EdgeInsetsDirectional.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                      bottom: MediaQuery.viewInsetsOf(context).bottom,
                     ),
                     color: c.CupertinoColors.systemBackground.resolveFrom(
                       context,
@@ -325,7 +327,7 @@ class _UIEquivalentsState extends State<UIEquivalents> {
                     height: 216,
                     padding: const EdgeInsetsDirectional.only(top: 6),
                     margin: EdgeInsetsDirectional.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                      bottom: MediaQuery.viewInsetsOf(context).bottom,
                     ),
                     color: c.CupertinoColors.systemBackground.resolveFrom(
                       context,

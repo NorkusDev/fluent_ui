@@ -1215,7 +1215,7 @@ class _TextBoxState extends State<TextBox>
           children: <Widget>[
             // Insert a prefix at the front if the prefix visibility mode matches
             // the current text state.
-            if (prefixWidget != null) prefixWidget,
+            ?prefixWidget,
             // In the middle part, stack the placeholder on top of the main EditableText
             // if needed.
             Expanded(
@@ -1226,13 +1226,10 @@ class _TextBoxState extends State<TextBox>
                 // See also https://github.com/flutter/flutter/issues/13715.
                 alignment: AlignmentDirectional.topCenter,
                 textDirection: widget.textDirection,
-                children: <Widget>[
-                  if (placeholder != null) placeholder,
-                  editableText,
-                ],
+                children: <Widget>[?placeholder, editableText],
               ),
             ),
-            if (suffixWidget != null) suffixWidget,
+            ?suffixWidget,
           ],
         );
       },

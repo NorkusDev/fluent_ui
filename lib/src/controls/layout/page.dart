@@ -252,7 +252,7 @@ class PageHeader extends StatelessWidget {
   /// [kPageDefaultVerticalPadding]
   static double horizontalPadding(BuildContext context) {
     assert(debugCheckHasMediaQuery(context));
-    final screenWidth = MediaQuery.sizeOf(context).width;
+    final screenWidth = MediaQuery.widthOf(context);
     final isSmallScreen = screenWidth < 640.0;
     final horizontalPadding = isSmallScreen
         ? 12.0
@@ -273,7 +273,7 @@ class PageHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          if (leading != null) leading!,
+          ?leading,
           Expanded(
             child: DefaultTextStyle.merge(
               style: theme.typography.title,

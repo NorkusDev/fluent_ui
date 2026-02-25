@@ -19,7 +19,7 @@ mixin PageMixin {
     return Builder(
       builder: (final context) {
         return Padding(
-          padding: const EdgeInsetsDirectional.only(top: 14, bottom: 2),
+          padding: const EdgeInsetsDirectional.only(top: 14, bottom: 4),
           child: DefaultTextStyle(
             style: FluentTheme.of(context).typography.subtitle!,
             child: content,

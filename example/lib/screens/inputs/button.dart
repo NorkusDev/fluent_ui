@@ -465,60 +465,6 @@ splitButtonKey.currentState?.showFlyout<void>();
             'represented by one radio button in the group.',
           ),
         ),
-        CodeSnippetCard(
-          codeSnippet: '''
-int? selected;
-
-Column(
-  children: List.generate(3, (index) {
-    return RadioButton(
-      checked: selected == index,
-      onChanged: (checked) {
-        if (checked) {
-          setState(() => selected = index);
-        }
-      }
-    );
-  }),
-)''',
-          child: Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(3, (final index) {
-                  return Padding(
-                    padding: EdgeInsetsDirectional.only(
-                      bottom: index == 2 ? 0.0 : 14.0,
-                    ),
-                    child: RadioButton(
-                      checked: radioButtonSelected == index,
-                      onChanged: radioButtonDisabled
-                          ? null
-                          : (final v) {
-                              if (v) {
-                                setState(() {
-                                  radioButtonSelected = index;
-                                });
-                              }
-                            },
-                      content: Text('RadioButton ${index + 1}'),
-                    ),
-                  );
-                }),
-              ),
-              const Spacer(),
-              ToggleSwitch(
-                checked: radioButtonDisabled,
-                onChanged: (final v) {
-                  setState(() {
-                    radioButtonDisabled = v;
-                  });
-                },
-                content: const Text('Disabled'),
-              ),
-            ],
-          ),
-        ),
       ],
     );
   }

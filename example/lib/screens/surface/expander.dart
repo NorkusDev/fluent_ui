@@ -74,40 +74,47 @@ Expander(
             content: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: crosts
-                      .map(
-                        (final e) => Padding(
-                          padding: const EdgeInsetsDirectional.only(bottom: 8),
-                          child: RadioButton(
-                            checked: crost == e,
-                            onChanged: (final selected) {
-                              if (selected) setState(() => crost = e);
-                            },
-                            content: Text(e),
+                RadioGroup(
+                  groupValue: crost,
+                  onChanged: (final v) {
+                    if (v != null) setState(() => crost = v);
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: crosts
+                        .map(
+                          (e) => Padding(
+                            padding: const EdgeInsetsDirectional.only(
+                              bottom: 8,
+                            ),
+                            child: RadioButton(value: e, content: Text(e)),
                           ),
-                        ),
-                      )
-                      .toList(),
+                        )
+                        .toList(),
+                  ),
                 ),
                 const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: sizes
-                      .map(
-                        (final e) => Padding(
-                          padding: const EdgeInsetsDirectional.only(bottom: 8),
-                          child: RadioButton(
-                            checked: size == e,
-                            onChanged: (final selected) {
-                              if (selected) setState(() => size = e);
-                            },
-                            content: Text(e),
+                RadioGroup<String>(
+                  groupValue: size,
+                  onChanged: (final v) {
+                    if (v != null) setState(() => size = v);
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: sizes
+                        .map(
+                          (final e) => Padding(
+                            padding: const EdgeInsetsDirectional.only(
+                              bottom: 8,
+                            ),
+                            child: RadioButton<String>(
+                              value: e,
+                              content: Text(e),
+                            ),
                           ),
-                        ),
-                      )
-                      .toList(),
+                        )
+                        .toList(),
+                  ),
                 ),
               ],
             ),

@@ -258,18 +258,19 @@ TabView(
                   tabs!.add(tab);
                 });
               },
-              onReorder: (final oldIndex, newIndex) {
+              onReorder: (oldIndex, newIndex) {
                 setState(() {
-                  if (oldIndex < newIndex) {
-                    newIndex -= 1;
+                  var reorderIndex = newIndex;
+                  if (oldIndex < reorderIndex) {
+                    reorderIndex -= 1;
                   }
                   final item = tabs!.removeAt(oldIndex);
-                  tabs!.insert(newIndex, item);
+                  tabs!.insert(reorderIndex, item);
 
-                  if (currentIndex == newIndex) {
+                  if (currentIndex == reorderIndex) {
                     currentIndex = oldIndex;
                   } else if (currentIndex == oldIndex) {
-                    currentIndex = newIndex;
+                    currentIndex = reorderIndex;
                   }
                 });
               },

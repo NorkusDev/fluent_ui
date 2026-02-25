@@ -96,67 +96,82 @@ class _SettingsState extends State<Settings> with PageMixin {
       children: [
         Text('Theme mode', style: FluentTheme.of(context).typography.subtitle),
         spacer,
-        ...List.generate(ThemeMode.values.length, (final index) {
-          final mode = ThemeMode.values[index];
-          return Padding(
-            padding: const EdgeInsetsDirectional.only(bottom: 8),
-            child: RadioButton(
-              checked: appTheme.mode == mode,
-              onChanged: (final value) {
-                if (value) {
-                  appTheme.mode = mode;
-
-                  if (kIsWindowEffectsSupported) {
-                    // some window effects require on [dark] to look good.
-                    // appTheme.setEffect(WindowEffect.disabled, context);
-                    appTheme.setEffect(appTheme.windowEffect, context);
-                  }
-                }
-              },
-              content: Text('$mode'.replaceAll('ThemeMode.', '')),
-            ),
-          );
-        }),
+        RadioGroup<ThemeMode>(
+          groupValue: appTheme.mode,
+          onChanged: (final value) {
+            if (value != null) {
+              appTheme.mode = value;
+              if (kIsWindowEffectsSupported) {
+                // some window effects require on [dark] to look good.
+                // appTheme.setEffect(WindowEffect.disabled, context);
+                appTheme.setEffect(appTheme.windowEffect, context);
+              }
+            }
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
+            children: List.generate(ThemeMode.values.length, (final index) {
+              final mode = ThemeMode.values[index];
+              return RadioButton<ThemeMode>(
+                value: mode,
+                content: Text('$mode'.replaceAll('ThemeMode.', '')),
+              );
+            }),
+          ),
+        ),
         biggerSpacer,
         Text(
           'Navigation Pane Display Mode',
           style: FluentTheme.of(context).typography.subtitle,
         ),
         spacer,
-        ...List.generate(PaneDisplayMode.values.length, (final index) {
-          final mode = PaneDisplayMode.values[index];
-          return Padding(
-            padding: const EdgeInsetsDirectional.only(bottom: 8),
-            child: RadioButton(
-              checked: appTheme.displayMode == mode,
-              onChanged: (final value) {
-                if (value) appTheme.displayMode = mode;
-              },
-              content: Text(mode.toString().replaceAll('PaneDisplayMode.', '')),
-            ),
-          );
-        }),
+        RadioGroup<PaneDisplayMode>(
+          groupValue: appTheme.displayMode,
+          onChanged: (value) {
+            if (value != null) appTheme.displayMode = value;
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
+            children: List.generate(PaneDisplayMode.values.length, (index) {
+              final mode = PaneDisplayMode.values[index];
+              return RadioButton<PaneDisplayMode>(
+                value: mode,
+                content: Text(
+                  mode.toString().replaceAll('PaneDisplayMode.', ''),
+                ),
+              );
+            }),
+          ),
+        ),
         biggerSpacer,
         Text(
           'Navigation Indicator',
           style: FluentTheme.of(context).typography.subtitle,
         ),
         spacer,
-        ...List.generate(NavigationIndicators.values.length, (final index) {
-          final mode = NavigationIndicators.values[index];
-          return Padding(
-            padding: const EdgeInsetsDirectional.only(bottom: 8),
-            child: RadioButton(
-              checked: appTheme.indicator == mode,
-              onChanged: (final value) {
-                if (value) appTheme.indicator = mode;
-              },
-              content: Text(
-                mode.toString().replaceAll('NavigationIndicators.', ''),
-              ),
-            ),
-          );
-        }),
+        RadioGroup<NavigationIndicators>(
+          groupValue: appTheme.indicator,
+          onChanged: (value) {
+            if (value != null) appTheme.indicator = value;
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
+            children: List.generate(NavigationIndicators.values.length, (
+              final index,
+            ) {
+              final mode = NavigationIndicators.values[index];
+              return RadioButton<NavigationIndicators>(
+                value: mode,
+                content: Text(
+                  mode.toString().replaceAll('NavigationIndicators.', ''),
+                ),
+              );
+            }),
+          ),
+        ),
         biggerSpacer,
         Text(
           'Accent Color',
@@ -190,22 +205,30 @@ class _SettingsState extends State<Settings> with PageMixin {
             ),
           ),
           spacer,
-          ...List.generate(currentWindowEffects.length, (final index) {
-            final mode = currentWindowEffects[index];
-            return Padding(
-              padding: const EdgeInsetsDirectional.only(bottom: 8),
-              child: RadioButton(
-                checked: appTheme.windowEffect == mode,
-                onChanged: (final value) {
-                  if (value) {
-                    appTheme.windowEffect = mode;
-                    appTheme.setEffect(mode, context);
-                  }
-                },
-                content: Text(mode.toString().replaceAll('WindowEffect.', '')),
-              ),
-            );
-          }),
+          RadioGroup<WindowEffect>(
+            groupValue: appTheme.windowEffect,
+            onChanged: (final value) {
+              if (value != null) {
+                appTheme.windowEffect = value;
+                appTheme.setEffect(value, context);
+              }
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 8,
+              children: List.generate(currentWindowEffects.length, (
+                final index,
+              ) {
+                final mode = currentWindowEffects[index];
+                return RadioButton<WindowEffect>(
+                  value: mode,
+                  content: Text(
+                    mode.toString().replaceAll('WindowEffect.', ''),
+                  ),
+                );
+              }),
+            ),
+          ),
         ],
         biggerSpacer,
         Text(
@@ -213,26 +236,28 @@ class _SettingsState extends State<Settings> with PageMixin {
           style: FluentTheme.of(context).typography.subtitle,
         ),
         spacer,
-        ...List.generate(TextDirection.values.length, (final index) {
-          final direction = TextDirection.values[index];
-          return Padding(
-            padding: const EdgeInsetsDirectional.only(bottom: 8),
-            child: RadioButton(
-              checked: appTheme.textDirection == direction,
-              onChanged: (final value) {
-                if (value) {
-                  appTheme.textDirection = direction;
-                }
-              },
-              content: Text(
-                '$direction'
-                    .replaceAll('TextDirection.', '')
-                    .replaceAll('rtl', 'Right to left')
-                    .replaceAll('ltr', 'Left to right'),
-              ),
-            ),
-          );
-        }).reversed,
+        RadioGroup<TextDirection>(
+          groupValue: appTheme.textDirection,
+          onChanged: (final value) {
+            if (value != null) appTheme.textDirection = value;
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
+            children: List.generate(TextDirection.values.length, (final index) {
+              final direction = TextDirection.values[index];
+              return RadioButton<TextDirection>(
+                value: direction,
+                content: Text(
+                  '$direction'
+                      .replaceAll('TextDirection.', '')
+                      .replaceAll('rtl', 'Right to left')
+                      .replaceAll('ltr', 'Left to right'),
+                ),
+              );
+            }).reversed.toList(),
+          ),
+        ),
         biggerSpacer,
         Text('Locale', style: FluentTheme.of(context).typography.subtitle),
         description(
@@ -242,25 +267,24 @@ class _SettingsState extends State<Settings> with PageMixin {
           ),
         ),
         spacer,
-        Wrap(
-          spacing: 15,
-          runSpacing: 10,
-          children: List.generate(supportedLocales.length, (final index) {
-            final locale = supportedLocales[index];
-
-            return Padding(
-              padding: const EdgeInsetsDirectional.only(bottom: 8),
-              child: RadioButton(
-                checked: currentLocale == locale,
-                onChanged: (final value) {
-                  if (value) {
-                    appTheme.locale = locale;
-                  }
-                },
+        RadioGroup<Locale>(
+          groupValue: currentLocale,
+          onChanged: (final value) {
+            if (value != null) {
+              appTheme.locale = value;
+            }
+          },
+          child: Wrap(
+            spacing: 15,
+            runSpacing: 10,
+            children: List.generate(supportedLocales.length, (final index) {
+              final locale = supportedLocales[index];
+              return RadioButton<Locale>(
+                value: locale,
                 content: Text('$locale'),
-              ),
-            );
-          }),
+              );
+            }),
+          ),
         ),
       ],
     );

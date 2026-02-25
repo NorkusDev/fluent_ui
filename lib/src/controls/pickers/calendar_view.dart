@@ -475,10 +475,7 @@ class CalendarViewState extends State<CalendarView> {
         startDate: _selectedStart,
       ),
       CalendarViewSelectionMode.range => CalendarSelectionData(
-        selectedDates: [
-          if (_selectedStart != null) _selectedStart!,
-          if (_selectedEnd != null) _selectedEnd!,
-        ],
+        selectedDates: [?_selectedStart, ?_selectedEnd],
         startDate: _selectedStart,
         endDate: _selectedEnd,
       ),
@@ -664,19 +661,20 @@ class CalendarViewState extends State<CalendarView> {
     return Padding(
       padding: const EdgeInsetsDirectional.symmetric(horizontal: 8),
       child: Row(
+        spacing: 1,
         children: [
           for (int i = 0; i < 7; i++)
             Expanded(
               child: Center(
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.all(1),
-                  child: Text(
-                    symbols[(firstDayOfWeek + i) % 7],
-                    style: FluentTheme.of(context).typography.body?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12,
-                    ),
+                child: Text(
+                  symbols[(firstDayOfWeek + i) % 7],
+                  style: FluentTheme.of(context).typography.body?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12,
                   ),
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.clip,
                 ),
               ),
             ),
@@ -1157,10 +1155,7 @@ class CalendarViewState extends State<CalendarView> {
         layoutBuilder: (currentChild, previousChildren) {
           return Stack(
             alignment: AlignmentDirectional.topCenter,
-            children: [
-              ...previousChildren,
-              if (currentChild != null) currentChild,
-            ],
+            children: [...previousChildren, ?currentChild],
           );
         },
       ),
@@ -1247,24 +1242,27 @@ class _CalendarHeader extends StatelessWidget {
                   ),
                 ),
               ),
-              icon: Row(
-                children: [
-                  Builder(
-                    builder: (context) {
-                      return Text(
-                        label,
-                        style:
-                            style ??
-                            theme.typography.subtitle?.copyWith(
-                              fontSize: 14,
-                              color: foregroundColor.resolve(
-                                HoverButton.of(context).states,
-                              ),
+              icon: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Builder(
+                  builder: (context) {
+                    return Text(
+                      label,
+                      style:
+                          style ??
+                          theme.typography.subtitle?.copyWith(
+                            fontSize: 14,
+                            color: foregroundColor.resolve(
+                              HoverButton.of(context).states,
                             ),
-                      );
-                    },
-                  ),
-                ],
+                          ),
+                      maxLines: 1,
+                      textAlign: TextAlign.start,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                    );
+                  },
+                ),
               ),
             ),
           ),
@@ -1360,8 +1358,8 @@ class _CalendarItem extends StatelessWidget {
           }),
         ),
         onPressed: isDisabled ? null : onTapped,
-        child: SizedBox.square(
-          dimension: 54,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 54, minHeight: 54),
           child: Stack(
             alignment: Alignment.center,
             clipBehavior: Clip.none,

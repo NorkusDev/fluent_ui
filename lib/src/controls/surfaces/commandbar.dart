@@ -370,24 +370,21 @@ class CommandBarState extends State<CommandBar> {
           child: listBuilder.call(
             mainAxisAlignment: widget.mainAxisAlignment,
             crossAxisAlignment: widget.crossAxisAlignment,
-            children: [
-              ...builtItems,
-              if (overflowWidget != null) overflowWidget,
-            ],
+            children: [...builtItems, ?overflowWidget],
           ),
         );
       case CommandBarOverflowBehavior.noWrap:
         w = listBuilder.call(
           mainAxisAlignment: widget.mainAxisAlignment,
           crossAxisAlignment: widget.crossAxisAlignment,
-          children: [...builtItems, if (overflowWidget != null) overflowWidget],
+          children: [...builtItems, ?overflowWidget],
         );
       case CommandBarOverflowBehavior.wrap:
         w = Wrap(
           direction: widget.direction,
           alignment: _getWrapAlignment(),
           crossAxisAlignment: _getWrapCrossAlignment(),
-          children: [...builtItems, if (overflowWidget != null) overflowWidget],
+          children: [...builtItems, ?overflowWidget],
         );
       case CommandBarOverflowBehavior.dynamicOverflow:
         assert(overflowWidget != null);
@@ -422,10 +419,7 @@ class CommandBarState extends State<CommandBar> {
           child: listBuilder.call(
             mainAxisAlignment: widget.mainAxisAlignment,
             crossAxisAlignment: widget.crossAxisAlignment,
-            children: [
-              ...builtItems,
-              if (overflowWidget != null) overflowWidget,
-            ],
+            children: [...builtItems, ?overflowWidget],
           ),
         ).hideVerticalScrollbar(context);
     }

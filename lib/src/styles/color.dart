@@ -330,13 +330,13 @@ class AccentColor extends ColorSwatch<String> {
     final lightest = Color.lerp(a.lightest, b.lightest, t);
 
     return AccentColor.swatch({
-      if (darkest != null) 'darkest': darkest,
-      if (darker != null) 'darker': darker,
-      if (dark != null) 'dark': dark,
+      'darkest': ?darkest,
+      'darker': ?darker,
+      'dark': ?dark,
       'normal': Color.lerp(a.normal, b.normal, t)!,
-      if (light != null) 'light': light,
-      if (lighter != null) 'lighter': lighter,
-      if (lightest != null) 'lightest': lightest,
+      'light': ?light,
+      'lighter': ?lighter,
+      'lightest': ?lightest,
     });
   }
 

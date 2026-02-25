@@ -131,8 +131,7 @@ class CalendarDatePickerState extends CalendarViewState {
             return Mica(
               borderRadius: BorderRadius.circular(6),
               child: Container(
-                height: 350,
-                width: 300,
+                constraints: const BoxConstraints(minHeight: 350),
                 decoration: BoxDecoration(
                   color: theme.resources.controlFillColorDefault,
                   borderRadius: BorderRadius.circular(6),

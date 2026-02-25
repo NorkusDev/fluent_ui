@@ -2,6 +2,54 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 
+// class RadioButton<T> extends RawRadio<T> {
+//   const RadioButton({
+//     required super.value,
+//     super.key,
+//     super.mouseCursor = const WidgetStatePropertyAll(MouseCursor.defer),
+//     super.toggleable = true,
+//     super.focusNode = null,
+//     super.autofocus = false,
+//     super.groupRegistry,
+//     super.enabled = true,
+//     required super.builder,
+//   });
+
+//   static Widget _defaultBuilder(
+//     BuildContext context,
+//     ToggleableStateMixin state,
+//   ) {
+//     final theme = RadioButtonTheme.of(context);
+
+//     final isChecked = state.states.contains(WidgetState.selected);
+//     final decoration =
+//         (isChecked
+//             ? theme.checkedDecoration?.resolve(state.states)
+//             : theme.uncheckedDecoration?.resolve(state.states)) ??
+//         const BoxDecoration(shape: BoxShape.circle);
+//     return AnimatedContainer(
+//       duration: FluentTheme.of(context).fastAnimationDuration,
+//       curve: FluentTheme.of(context).animationCurve,
+//       height: 20,
+//       width: 20,
+//       decoration: decoration.copyWith(color: Colors.transparent),
+
+//       /// We need two boxes here because flutter draws the color
+//       /// behind the border, and it results in an weird effect. This
+//       /// way, the inner color will only be rendered within the
+//       /// bounds of the border.
+//       child: AnimatedContainer(
+//         duration: FluentTheme.of(context).fastAnimationDuration,
+//         curve: FluentTheme.of(context).animationCurve,
+//         decoration: BoxDecoration(
+//           color: decoration.color ?? Colors.transparent,
+//           shape: decoration.shape,
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 /// Radio buttons, also called option buttons, let users select one option from
 /// a collection of two or more mutually exclusive, but related, options.
 ///
@@ -22,30 +70,16 @@ import 'package:flutter/rendering.dart';
 /// ```dart
 /// int selectedOption = 0;
 ///
-/// Column(
-///   children: [
-///     RadioButton(
-///       checked: selectedOption == 0,
-///       content: Text('Option 1'),
-///       onChanged: (checked) {
-///         if (checked) setState(() => selectedOption = 0);
-///       },
-///     ),
-///     RadioButton(
-///       checked: selectedOption == 1,
-///       content: Text('Option 2'),
-///       onChanged: (checked) {
-///         if (checked) setState(() => selectedOption = 1);
-///       },
-///     ),
-///     RadioButton(
-///       checked: selectedOption == 2,
-///       content: Text('Option 3'),
-///       onChanged: (checked) {
-///         if (checked) setState(() => selectedOption = 2);
-///       },
-///     ),
-///   ],
+/// RadioGroup<int>(
+///   groupValue: selectedOption,
+///   onChanged: (value) => setState(() => selectedOption = value ?? selectedOption),
+///   child: Column(
+///     children: [
+///       RadioButton<int>(value: 0, content: Text('Option 1')),
+///       RadioButton<int>(value: 1, content: Text('Option 2')),
+///       RadioButton<int>(value: 2, content: Text('Option 3')),
+///     ],
+///   ),
 /// )
 /// ```
 /// {@end-tool}
@@ -57,31 +91,22 @@ import 'package:flutter/rendering.dart';
 ///  * [Checkbox], which lets the user select multiple options
 ///  * [ComboBox], which lets the user select from a dropdown list
 ///  * <https://learn.microsoft.com/en-us/windows/apps/design/controls/radio-button>
-class RadioButton extends StatelessWidget {
+class RadioButton<T> extends StatefulWidget {
   /// Creates a radio button.
   const RadioButton({
-    required this.checked,
-    required this.onChanged,
+    required this.value,
     super.key,
     this.style,
     this.content,
     this.semanticLabel,
     this.focusNode,
     this.autofocus = false,
+    this.enabled = true,
+    this.groupRegistry,
   });
 
   /// Whether this radio button is checked.
-  final bool checked;
-
-  /// Called when the value of the radio button should change.
-  ///
-  /// The radio button passes the new value to the callback but does
-  /// not actually change state until the parent widget rebuilds the
-  /// radio button with the new value.
-  ///
-  /// If this callback is null, the radio button will be displayed as
-  /// disabled and will not respond to input gestures.
-  final ValueChanged<bool>? onChanged;
+  final T value;
 
   /// The style of the radio buttonbutton.
   ///
@@ -106,35 +131,42 @@ class RadioButton extends StatelessWidget {
   /// {@macro flutter.widgets.Focus.autofocus}
   final bool autofocus;
 
+  /// Whether this radio button is enabled.
+  final bool enabled;
+
+  /// {@macro flutter.widget.RawRadio.groupRegistry}
+  final RadioGroupRegistry<T>? groupRegistry;
+
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(FlagProperty('checked', value: checked, ifFalse: 'unchecked'))
-      ..add(
-        FlagProperty('disabled', value: onChanged == null, ifFalse: 'enabled'),
-      )
-      ..add(ObjectFlagProperty.has('style', style))
-      ..add(
-        FlagProperty('autofocus', value: autofocus, ifFalse: 'manual focus'),
-      )
-      ..add(StringProperty('semanticLabel', semanticLabel));
+  State<RadioButton<T>> createState() => _RadioButtonState<T>();
+}
+
+class _RadioButtonState<T> extends State<RadioButton<T>> {
+  FocusNode? _internalFocusNode;
+  FocusNode get _focusNode {
+    if (widget.focusNode != null) return widget.focusNode!;
+    _internalFocusNode ??= FocusNode();
+    return _internalFocusNode!;
   }
 
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasFluentTheme(context));
-    final style = RadioButtonTheme.of(context).merge(this.style);
-    return HoverButton(
-      autofocus: autofocus,
-      focusNode: focusNode,
-      onPressed: onChanged == null ? null : () => onChanged!(!checked),
-      semanticLabel: semanticLabel,
+    final style = RadioButtonTheme.of(context).merge(widget.style);
+    return RawRadio<T>(
+      value: widget.value,
+      mouseCursor: const WidgetStatePropertyAll(MouseCursor.defer),
+      toggleable: false,
+      focusNode: _focusNode,
+      autofocus: widget.autofocus,
+      groupRegistry: widget.groupRegistry ?? RadioGroup.maybeOf<T>(context),
+      enabled: widget.enabled,
       builder: (context, state) {
+        final checked = state.states.contains(WidgetState.selected);
         final decoration =
             (checked
-                ? style.checkedDecoration?.resolve(state)
-                : style.uncheckedDecoration?.resolve(state)) ??
+                ? style.checkedDecoration?.resolve(state.states)
+                : style.uncheckedDecoration?.resolve(state.states)) ??
             const BoxDecoration(shape: BoxShape.circle);
         Widget child = AnimatedContainer(
           duration: FluentTheme.of(context).fastAnimationDuration,
@@ -156,7 +188,7 @@ class RadioButton extends StatelessWidget {
             ),
           ),
         );
-        if (content != null) {
+        if (widget.content != null) {
           child = Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -165,13 +197,13 @@ class RadioButton extends StatelessWidget {
               Flexible(
                 child: DefaultTextStyle.merge(
                   style: TextStyle(
-                    color: style.foregroundColor?.resolve(state),
+                    color: style.foregroundColor?.resolve(state.states),
                   ),
                   child: IconTheme.merge(
                     data: IconThemeData(
-                      color: style.foregroundColor?.resolve(state),
+                      color: style.foregroundColor?.resolve(state.states),
                     ),
-                    child: content!,
+                    child: widget.content!,
                   ),
                 ),
               ),
@@ -180,7 +212,10 @@ class RadioButton extends StatelessWidget {
         }
         return Semantics(
           checked: checked,
-          child: FocusBorder(focused: state.isFocused, child: child),
+          child: FocusBorder(
+            focused: state.states.contains(WidgetState.focused),
+            child: child,
+          ),
         );
       },
     );
