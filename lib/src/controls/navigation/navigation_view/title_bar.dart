@@ -36,6 +36,7 @@ class TitleBar extends StatelessWidget {
     this.onDragEnded,
     this.onDragCancelled,
     this.onDragUpdated,
+    this.onDoubleTap,
   });
 
   /// Whether the back button is enabled.
@@ -100,6 +101,9 @@ class TitleBar extends StatelessWidget {
   /// The callback to call when the drag is updated.
   final VoidCallback? onDragUpdated;
 
+  /// The callback that is called when the title bar is double-tapped.
+  final VoidCallback? onDoubleTap;
+  
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasFluentTheme(context));
@@ -115,6 +119,7 @@ class TitleBar extends StatelessWidget {
       onPanEnd: (_) => onDragEnded?.call(),
       onPanCancel: () => onDragCancelled?.call(),
       onPanUpdate: (_) => onDragUpdated?.call(),
+      onDoubleTap: () => onDoubleTap?.call(),
       child: ConstrainedBox(
         constraints: BoxConstraints(
           // according to documentation, increase the size of the title bar if
@@ -130,7 +135,11 @@ class TitleBar extends StatelessWidget {
               child: Row(
                 children: [
                   if (isBackButtonVisible)
-                    backButton ?? PaneBackButton(onPressed: onBackRequested),
+                    backButton ??
+                        PaneBackButton(
+                          onPressed: onBackRequested,
+                          enabled: isBackButtonEnabled ?? true,
+                        ),
                   if (isPaneToggleButtonVisible) ?view.pane?.toggleButton,
                   if (leftHeader != null)
                     Padding(
@@ -570,6 +579,8 @@ class PaneToggleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final view = NavigationView.dataOf(context);
+    final fluentTheme = FluentTheme.of(context);
+    final paneItemHeight = (kPaneItemMinHeight + fluentTheme.visualDensity.baseSizeAdjustment.dy).clamp(0.0, double.infinity);
 
     final width = view.pane?.size?.compactWidth ?? kCompactNavigationPaneWidth;
     return Container(
@@ -578,7 +589,7 @@ class PaneToggleButton extends StatelessWidget {
         minWidth: width,
         maxWidth: width,
         // minHeight: kPaneItemMinHeight,
-        maxHeight: kPaneItemMinHeight,
+        maxHeight: paneItemHeight,
       ),
       child: Tooltip(
         message: 'Toggle navigation',
@@ -625,6 +636,8 @@ class PaneBackButton extends StatelessWidget {
     final view = NavigationView.of(context);
     final viewData = NavigationView.dataOf(context);
     final canPop = viewData.canPop;
+    final fluentTheme = FluentTheme.of(context);
+    final paneItemHeight = (kPaneItemMinHeight + fluentTheme.visualDensity.baseSizeAdjustment.dy).clamp(0.0, double.infinity);
 
     final width =
         viewData.pane?.size?.compactWidth ?? kCompactNavigationPaneWidth;
@@ -634,7 +647,7 @@ class PaneBackButton extends StatelessWidget {
         minWidth: width,
         maxWidth: width,
         // minHeight: kPaneItemMinHeight,
-        maxHeight: kPaneItemMinHeight,
+        maxHeight: paneItemHeight,
       ),
       child: Tooltip(
         message: localizations.backButtonTooltip,

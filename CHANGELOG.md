@@ -1,7 +1,18 @@
 ## [next]
 
+- feat: Controls now respond to `VisualDensity` from `FluentThemeData` for compact sizing. Use `FluentThemeData(visualDensity: VisualDensity.compact)` to enable compact mode ([#1175](https://github.com/bdlukaa/fluent_ui/issues/1175))
+- fix: `NavigationView` no longer throws `BoxConstraints has a negative minimum height` when header and menu button are both absent ([#1334](https://github.com/bdlukaa/fluent_ui/issues/1334))
+- fix: `ProgressBar` chooses the correct direction when directionality is right-to-left ([#1291](https://github.com/bdlukaa/fluent_ui/issues/1291))
+- fix: Flyout's bottom shadow no longer clipped in bottom placement modes ([#1323](https://github.com/bdlukaa/fluent_ui/issues/1323))
 - fix: Correctly handle system text scaling on `DatePicker`, `TimePicker`, `AutoSuggestBox`, `CalendarDatePicker` popups ([#1321](https://github.com/bdlukaa/fluent_ui/issues/1321), [#1286](https://github.com/bdlukaa/fluent_ui/pull/1286))
 - **BREAKING** feat: Rename `RatingBar` to `RatingControl`, and updated its style ([#1274](https://github.com/bdlukaa/fluent_ui/issues/1274))
+- fix: `NumberBox` compact overlay is now positioned correctly on right-to-left directionality ([#1326](https://github.com/bdlukaa/fluent_ui/issues/1326))
+- **BREAKING** feat: Add `TreeViewController` for programmatic control of `TreeView` ([#1140](https://github.com/bdlukaa/fluent_ui/issues/1140))
+  - `TreeViewController` provides methods: `getItemFromValue()`, `addItem()`, `addItems()`, `removeItem()`, `moveItem()`, `expandItem()`, `collapseItem()`, `expandAll()`, `collapseAll()`, `selectItem()`, `deselectItem()`, `selectAll()`, `deselectAll()`
+  - Reordering items is supported via `controller.moveItem(item, newParent: target, index: 0)`
+- **BREAKING** feat: `TreeViewItem.children` is now unmodifiable. Use `TreeViewController` methods (`addItem()`, `addItems()`, `removeItem()`, `moveItem()`) to modify tree structure.
+- feat: `TitleBar` now supports double-click callback to maximize or restore the window ([#1298](https://github.com/bdlukaa/fluent_ui/issues/1298))
+- fix: `TitleBar`'s `isBackButtonEnabled` now works correctly ([#1298](https://github.com/bdlukaa/fluent_ui/issues/1298))
 
 ## 4.14.0
 

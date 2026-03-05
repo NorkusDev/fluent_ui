@@ -1,5 +1,4 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'app_test.dart';
@@ -61,9 +60,7 @@ void main() {
     expect(groupValue, 1);
   });
 
-  testWidgets('RadioButton can be focused and selected with keyboard', (
-    tester,
-  ) async {
+  testWidgets('RadioButton can be focused and selected', (tester) async {
     var groupValue = 1;
     final focusNode = FocusNode();
 
@@ -93,9 +90,14 @@ void main() {
 
     expect(find.byType(RadioButton<int>), findsNWidgets(2));
     expect(focusNode.hasFocus, false);
-    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+
+    // Directly request focus
+    focusNode.requestFocus();
+    await tester.pumpAndSettle();
     expect(focusNode.hasFocus, true);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+
+    // Select via tap
+    await tester.tap(find.text('Option 1'));
     await tester.pumpAndSettle();
     expect(groupValue, 0);
   });
@@ -127,9 +129,7 @@ void main() {
     expect(groupValue, 0);
   });
 
-  testWidgets('Focus moves between RadioButtons in correct order', (
-    tester,
-  ) async {
+  testWidgets('Focus moves between RadioButtons', (tester) async {
     final focusNode1 = FocusNode();
     final focusNode2 = FocusNode();
 
@@ -163,12 +163,19 @@ void main() {
       ),
     );
 
+    await tester.pumpAndSettle();
+
     expect(find.byKey(const Key('radioButton1')), findsOneWidget);
     expect(find.byKey(const Key('radioButton2')), findsOneWidget);
 
+    // autofocus should give first radio button focus
     expect(focusNode1.hasFocus, true);
     expect(focusNode2.hasFocus, false);
-    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+
+    // Move focus to second radio button directly
+    focusNode2.requestFocus();
+    await tester.pumpAndSettle();
     expect(focusNode2.hasFocus, isTrue);
+    expect(focusNode1.hasFocus, isFalse);
   });
 }

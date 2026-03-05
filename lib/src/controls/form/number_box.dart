@@ -545,6 +545,8 @@ class NumberBoxState<T extends num> extends State<NumberBox<T>> {
         final boxContext = _textBoxKey.currentContext;
         if (boxContext == null) return const SizedBox.shrink();
         final box = boxContext.findRenderObject()! as RenderBox;
+        final isRtl = Directionality.of(context) == TextDirection.rtl;
+        final overlayHeight = (kNumberBoxOverlayHeight + FluentTheme.of(context).visualDensity.baseSizeAdjustment.dy).clamp(0.0, double.infinity);
 
         final Widget child = PositionedDirectional(
           width: kNumberBoxOverlayWidth,
@@ -552,8 +554,8 @@ class NumberBoxState<T extends num> extends State<NumberBox<T>> {
             link: _layerLink,
             showWhenUnlinked: false,
             offset: Offset(
-              box.size.width - kNumberBoxOverlayWidth,
-              box.size.height / 2 - kNumberBoxOverlayHeight / 2,
+              isRtl ? 0 : box.size.width - kNumberBoxOverlayWidth,
+              box.size.height / 2 - overlayHeight / 2,
             ),
             child: SizedBox(
               width: kNumberBoxOverlayWidth,
@@ -593,6 +595,7 @@ class NumberBoxState<T extends num> extends State<NumberBox<T>> {
   Widget build(BuildContext context) {
     assert(debugCheckHasFluentTheme(context));
     assert(debugCheckHasOverlay(context));
+    assert(debugCheckHasDirectionality(context));
 
     final textFieldSuffix = <Widget>[
       // Ensure all modes have a suffix. This is necessary to ensure the text
@@ -904,6 +907,7 @@ class _NumberBoxCompactOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     assert(debugCheckHasFluentTheme(context));
     final theme = FluentTheme.of(context);
+    final overlayHeight = (kNumberBoxOverlayHeight + theme.visualDensity.baseSizeAdjustment.dy).clamp(0.0, double.infinity);
 
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 10),
@@ -914,7 +918,7 @@ class _NumberBoxCompactOverlay extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: Container(
-            height: kNumberBoxOverlayHeight,
+            height: overlayHeight,
             width: kNumberBoxOverlayWidth,
             decoration: BoxDecoration(
               color: theme.menuColor,

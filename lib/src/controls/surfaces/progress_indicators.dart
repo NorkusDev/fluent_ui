@@ -138,7 +138,9 @@ class _ProgressBarState extends State<ProgressBar>
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasFluentTheme(context));
+    assert(debugCheckHasDirectionality(context));
     final theme = FluentTheme.of(context);
+    final direction = Directionality.of(context);
     return Container(
       height: widget.strokeWidth,
       constraints: const BoxConstraints(minWidth: _kMinProgressBarWidth),
@@ -161,6 +163,7 @@ class _ProgressBarState extends State<ProgressBar>
                     theme.accentColor.defaultBrushFor(theme.brightness),
                 backgroundColor:
                     widget.backgroundColor ?? theme.inactiveBackgroundColor,
+                textDirection: direction,
                 p1: p1,
                 p2: p2,
                 idleFrames: idleFrames,
@@ -202,6 +205,7 @@ class _ProgressBarPainter extends CustomPainter {
   final double strokeWidth;
   final Color backgroundColor;
   final Color activeColor;
+  final TextDirection textDirection;
 
   final double? value;
 
@@ -216,11 +220,17 @@ class _ProgressBarPainter extends CustomPainter {
     required this.strokeWidth,
     required this.backgroundColor,
     required this.activeColor,
+    required this.textDirection,
     required this.value,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (textDirection == TextDirection.rtl) {
+      canvas.translate(size.width, 0);
+      canvas.scale(-1, 1);
+    }
+
     size = Size(size.width - strokeWidth / 2, size.height - strokeWidth / 2);
 
     void drawLine(Offset xy1, Offset xy2, Color color) {
