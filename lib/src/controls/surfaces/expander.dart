@@ -113,6 +113,7 @@ class Expander extends StatefulWidget {
     this.contentBackgroundColor,
     this.contentPadding = const EdgeInsetsDirectional.all(16),
     this.contentShape,
+    this.minHeight = 42,
   });
 
   /// The leading widget.
@@ -204,6 +205,9 @@ class Expander extends StatefulWidget {
   ///
   /// Use the `open` property to determine whether the expander is open or not.
   final ExpanderShapeBuilder? contentShape;
+
+  /// The hight expander
+  final double minHeight;
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -318,7 +322,7 @@ class ExpanderState extends State<Expander>
         hitTestBehavior: HitTestBehavior.deferToChild,
         builder: (context, states) {
           return Container(
-            constraints: BoxConstraints(minHeight: (42 + theme.visualDensity.baseSizeAdjustment.dy).clamp(0.0, double.infinity)),
+            constraints: BoxConstraints(minHeight: (minHeight + theme.visualDensity.baseSizeAdjustment.dy).clamp(0.0, double.infinity)),
             decoration: ShapeDecoration(
               color:
                   widget.headerBackgroundColor?.resolve(states) ??
