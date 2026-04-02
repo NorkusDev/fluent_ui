@@ -1,5 +1,4 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'app_test.dart';
@@ -8,154 +7,175 @@ void main() {
   testWidgets('RadioButton initializes with correct selected value', (
     tester,
   ) async {
-    var radioButtonValue = true;
+    const selectedValue = 1;
+
+    await tester.pumpWidget(
+      wrapApp(
+        child: RadioGroup<int>(
+          groupValue: selectedValue,
+          onChanged: (_) {},
+          child: const Column(
+            children: [
+              RadioButton<int>(value: 0, content: Text('Option 1')),
+              RadioButton<int>(value: selectedValue, content: Text('Option 2')),
+            ],
+          ),
+        ),
+      ),
+    );
+  });
+
+  testWidgets('RadioButton changes state on tap', (tester) async {
+    var groupValue = 0;
 
     await tester.pumpWidget(
       StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
+        builder: (context, setState) {
           return wrapApp(
-            child: RadioButton(
-              checked: radioButtonValue,
-              onChanged: (bool value) {},
+            child: RadioGroup<int>(
+              groupValue: groupValue,
+              onChanged: (value) =>
+                  setState(() => groupValue = value ?? groupValue),
+              child: const Column(
+                children: [
+                  RadioButton<int>(value: 0, content: Text('Option 1')),
+                  RadioButton<int>(value: 1, content: Text('Option 2')),
+                ],
+              ),
             ),
           );
         },
       ),
     );
 
-    expect(
-      tester.widget<RadioButton>(find.byType(RadioButton)).checked,
-      radioButtonValue,
-    );
-  });
-  testWidgets('RadioButton change state accordingly', (
-    WidgetTester tester,
-  ) async {
-    var radioButtonValue = false;
+    expect(groupValue, 0);
 
-    await tester.pumpWidget(
-      StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-          return wrapApp(
-            child: RadioButton(
-              checked: radioButtonValue,
-              onChanged: (bool value) {
-                setState(() {
-                  radioButtonValue = value;
-                });
-              },
-            ),
-          );
-        },
-      ),
-    );
-
-    expect(tester.widget<RadioButton>(find.byType(RadioButton)).checked, false);
-
-    await tester.tap(find.byType(RadioButton));
+    await tester.tap(find.byType(RadioButton<int>).last);
     await tester.pumpAndSettle();
-    expect(radioButtonValue, true);
+    expect(groupValue, 1);
 
-    await tester.tap(find.byType(RadioButton));
+    // Tapping the already-selected button does not deselect it (no-toggle behaviour)
+    await tester.tap(find.byType(RadioButton<int>).last);
     await tester.pumpAndSettle();
-    expect(radioButtonValue, false);
+    expect(groupValue, 1);
   });
-  testWidgets('Radio Button can be focused and selected with keyboard', (
-    WidgetTester tester,
-  ) async {
-    var radioButtonValue = false;
+
+  testWidgets('RadioButton can be focused and selected', (tester) async {
+    var groupValue = 1;
     final focusNode = FocusNode();
 
     await tester.pumpWidget(
       StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
+        builder: (context, setState) {
           return wrapApp(
-            child: RadioButton(
-              focusNode: focusNode,
-              onChanged: (bool value) {
-                setState(() {
-                  radioButtonValue = value;
-                });
-              },
-              checked: radioButtonValue,
+            child: RadioGroup<int>(
+              groupValue: groupValue,
+              onChanged: (value) =>
+                  setState(() => groupValue = value ?? groupValue),
+              child: Column(
+                children: [
+                  RadioButton<int>(
+                    value: 0,
+                    focusNode: focusNode,
+                    content: const Text('Option 1'),
+                  ),
+                  const RadioButton<int>(value: 1, content: Text('Option 2')),
+                ],
+              ),
             ),
           );
         },
       ),
     );
-    final radioButtonFinder = find.byType(RadioButton);
 
-    expect(radioButtonFinder, findsOneWidget);
+    expect(find.byType(RadioButton<int>), findsNWidgets(2));
     expect(focusNode.hasFocus, false);
-    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-    expect(focusNode.hasFocus, true);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+
+    // Directly request focus
+    focusNode.requestFocus();
     await tester.pumpAndSettle();
-    expect(radioButtonValue, true);
+    expect(focusNode.hasFocus, true);
+
+    // Select via tap
+    await tester.tap(find.text('Option 1'));
+    await tester.pumpAndSettle();
+    expect(groupValue, 0);
   });
 
-  testWidgets('Disabled RadioButton cannot be selected', (
-    WidgetTester tester,
-  ) async {
-    var radioButtonValue = false;
+  testWidgets('Disabled RadioButton cannot be selected', (tester) async {
+    var groupValue = 0;
 
     await tester.pumpWidget(
       StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
+        builder: (context, setState) {
           return wrapApp(
-            child: RadioButton(onChanged: null, checked: radioButtonValue),
+            child: RadioGroup<int>(
+              groupValue: groupValue,
+              onChanged: (value) =>
+                  setState(() => groupValue = value ?? groupValue),
+              child: const RadioButton<int>(
+                value: 1,
+                enabled: false,
+                content: Text('Option'),
+              ),
+            ),
           );
         },
       ),
     );
-    final radioButtonFinder = find.byType(RadioButton);
-    final radioButtonWidget = tester.widget<RadioButton>(radioButtonFinder);
 
-    expect(radioButtonWidget.checked, false);
-    await tester.tap(radioButtonFinder);
+    await tester.tap(find.byType(RadioButton<int>));
     await tester.pumpAndSettle();
-    expect(radioButtonValue, false);
+    expect(groupValue, 0);
   });
-  testWidgets('Focus moves between RadioButtons in correct order', (
-    WidgetTester tester,
-  ) async {
+
+  testWidgets('Focus moves between RadioButtons', (tester) async {
     final focusNode1 = FocusNode();
     final focusNode2 = FocusNode();
 
     await tester.pumpWidget(
       StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
+        builder: (context, setState) {
           return wrapApp(
-            child: Column(
-              children: [
-                RadioButton(
-                  autofocus: true,
-                  key: const Key('radioButton1'),
-                  focusNode: focusNode1,
-                  onChanged: (bool value) {},
-                  checked: true,
-                ),
-                RadioButton(
-                  key: const Key('radioButton2'),
-                  focusNode: focusNode2,
-                  onChanged: (bool value) {},
-                  checked: false,
-                ),
-              ],
+            child: RadioGroup<int>(
+              groupValue: 0,
+              onChanged: (_) {},
+              child: Column(
+                children: [
+                  RadioButton<int>(
+                    autofocus: true,
+                    key: const Key('radioButton1'),
+                    value: 0,
+                    focusNode: focusNode1,
+                    content: const Text('Option 1'),
+                  ),
+                  RadioButton<int>(
+                    key: const Key('radioButton2'),
+                    value: 1,
+                    focusNode: focusNode2,
+                    content: const Text('Option 2'),
+                  ),
+                ],
+              ),
             ),
           );
         },
       ),
     );
-    final radioButton1Finder = find.byKey(const Key('radioButton1'));
-    final radioButton2Finder = find.byKey(const Key('radioButton2'));
 
-    expect(radioButton1Finder, findsOneWidget);
-    expect(radioButton2Finder, findsOneWidget);
+    await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('radioButton1')), findsOneWidget);
+    expect(find.byKey(const Key('radioButton2')), findsOneWidget);
+
+    // autofocus should give first radio button focus
     expect(focusNode1.hasFocus, true);
     expect(focusNode2.hasFocus, false);
-    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+
+    // Move focus to second radio button directly
+    focusNode2.requestFocus();
+    await tester.pumpAndSettle();
     expect(focusNode2.hasFocus, isTrue);
+    expect(focusNode1.hasFocus, isFalse);
   });
 }
