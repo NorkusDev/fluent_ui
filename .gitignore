@@ -76,3 +76,5 @@ build/
 .fvm/
 example/pubspec.lock
 pubspec.lock
+.fvmrc
+.vscode
