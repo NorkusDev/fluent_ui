@@ -94,6 +94,7 @@ class DatePicker extends StatefulWidget {
     this.showDay = true,
     this.showMonth = true,
     this.showYear = true,
+    this.enabled = true,
     DateTime? startDate,
     DateTime? endDate,
     this.contentPadding = kPickerContentPadding,
@@ -205,6 +206,11 @@ class DatePicker extends StatefulWidget {
 
   // The Style of picker
   final TextStyle? style;
+  /// Whether the picker is enabled. 
+  /// 
+  /// If false, the picker will not respond to user input and 
+  /// will appear in a disabled state
+  final bool enabled;
 
   @override
   State<DatePicker> createState() => DatePickerState();
@@ -213,6 +219,7 @@ class DatePicker extends StatefulWidget {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
+      ..add(DiagnosticsProperty<bool>('enabled', enabled, defaultValue: true))
       ..add(DiagnosticsProperty<DateTime>('selected', selected, ifNull: 'now'))
       ..add(
         FlagProperty(
@@ -376,15 +383,15 @@ class DatePickerState extends State<DatePicker> {
       child: (context, open) => HoverButton(
         autofocus: widget.autofocus,
         focusNode: widget.focusNode,
-        onPressed: widget.onChanged == null
-            ? null
-            : () async {
-                _monthController.dispose();
-                _dayController.dispose();
-                _yearController.dispose();
-                _initControllers();
-                await open();
-              },
+        onPressed: (widget.onChanged == null || !widget.enabled)
+          ? null
+          : () async {
+              _monthController.dispose();
+              _dayController.dispose();
+              _yearController.dispose();
+              _initControllers();
+              await open();
+            },
         builder: (context, states) {
           if (states.isDisabled) states = <WidgetState>{};
           const divider = Divider(
@@ -452,6 +459,7 @@ class DatePickerState extends State<DatePicker> {
           };
 
           final fieldMap = fieldOrder.map((e) => fields[e]);
+          final bool isCurrentlyDisabled = !widget.enabled || states.isDisabled;
 
           return FocusBorder(
             focused: states.isFocused,
@@ -465,11 +473,11 @@ class DatePickerState extends State<DatePicker> {
               ),
               decoration: kPickerDecorationBuilder(context, states),
               child: DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: widget.selected == null
-                      ? theme.resources.textFillColorSecondary
-                      : null,
-                ),
+               style: TextStyle(
+                color: isCurrentlyDisabled
+                    ? theme.resources.textFillColorDisabled // Use disabled color
+                    : (widget.selected == null ? theme.resources.textFillColorSecondary : null),
+              ),
                 maxLines: 1,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -494,7 +502,10 @@ class DatePickerState extends State<DatePicker> {
     if (widget.header != null) {
       return InfoLabel(
         label: widget.header!,
-        labelStyle: widget.headerStyle,
+        labelStyle: widget.headerStyle?.copyWith(
+          // 5. Optionally dim the header style if disabled
+          color: widget.enabled ? null : theme.resources.textFillColorDisabled,
+        ),
         child: picker,
       );
     }
