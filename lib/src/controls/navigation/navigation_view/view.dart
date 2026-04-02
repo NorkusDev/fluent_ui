@@ -230,7 +230,6 @@ class NavigationView extends StatefulWidget {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('titleBar', titleBar))
       ..add(DiagnosticsProperty('pane', pane))
       ..add(
         DiagnosticsProperty(
@@ -549,6 +548,11 @@ class NavigationViewState extends State<NavigationView> {
 
       if (autoDisplayMode != _displayMode) {
         widget.onDisplayModeChanged?.call(autoDisplayMode);
+        // Reset minimal pane open state when leaving minimal mode so that
+        // re-entering minimal mode starts with the pane closed.
+        if (_displayMode == PaneDisplayMode.minimal) {
+          _minimalPaneOpen = false;
+        }
       }
 
       _displayMode = autoDisplayMode;
@@ -820,7 +824,7 @@ class NavigationViewState extends State<NavigationView> {
         children: [
           Padding(
             padding: EdgeInsetsDirectional.only(
-              top: 38,
+              top: TitleBar.calculateHeight(widget.titleBar),
               start: pane.size?.compactWidth ?? kCompactNavigationPaneWidth,
             ),
             child: content,
@@ -967,6 +971,7 @@ class NavigationViewState extends State<NavigationView> {
                   child: _OpenNavigationPane(
                     theme: theme,
                     pane: pane,
+                    usePanelKey: false,
                     onItemSelected: () {
                       if (_displayMode == PaneDisplayMode.minimal) {
                         isMinimalPaneOpen = false;

@@ -1,5 +1,13 @@
-## [next]
+## 4.15.1
 
+- fix: `NavigationView` auto display mode no longer shows a brief overlay when resizing from minimal to compact mode ([#1316](https://github.com/bdlukaa/fluent_ui/pull/1316))
+- fix: `MenuFlyout` sub-item tree now correctly expands to the left and shows a `chevron_left` icon when right-to-left directionality is enabled ([#1342](https://github.com/bdlukaa/fluent_ui/issues/1342))
+- fix: `NavigationView` compact pane `PaneItemExpander` flyout is now correctly placed in right-to-left directionality; Flyout `leftTop` and `rightTop` placement modes now correctly align with the top of the target element when the flyout is taller than the available space above the target ([#1289](https://github.com/bdlukaa/fluent_ui/issues/1289))
+- fix: `Tab` in `TabView` is now draggable from its entire area, including the padding ([#1356](https://github.com/bdlukaa/fluent_ui/issues/1356))
+
+## 4.15.0
+
+- fix: `MenuFlyout` no longer throws `TypeError` on sub-items ([#1337](https://github.com/bdlukaa/fluent_ui/issues/1337))
 - feat: Controls now respond to `VisualDensity` from `FluentThemeData` for compact sizing. Use `FluentThemeData(visualDensity: VisualDensity.compact)` to enable compact mode ([#1175](https://github.com/bdlukaa/fluent_ui/issues/1175))
 - fix: `NavigationView` no longer throws `BoxConstraints has a negative minimum height` when header and menu button are both absent ([#1334](https://github.com/bdlukaa/fluent_ui/issues/1334))
 - fix: `ProgressBar` chooses the correct direction when directionality is right-to-left ([#1291](https://github.com/bdlukaa/fluent_ui/issues/1291))
@@ -12,7 +20,8 @@
   - Reordering items is supported via `controller.moveItem(item, newParent: target, index: 0)`
 - **BREAKING** feat: `TreeViewItem.children` is now unmodifiable. Use `TreeViewController` methods (`addItem()`, `addItems()`, `removeItem()`, `moveItem()`) to modify tree structure.
 - feat: `TitleBar` now supports double-click callback to maximize or restore the window ([#1298](https://github.com/bdlukaa/fluent_ui/issues/1298))
-- fix: `TitleBar`'s `isBackButtonEnabled` now works correctly ([#1298](https://github.com/bdlukaa/fluent_ui/issues/1298))
+- fix: Correctly apply `TitleBar`'s `isBackButtonEnabled` ([#1298](https://github.com/bdlukaa/fluent_ui/issues/1298))
+- fix: `TitleBar` height no longer shrinks when the window is resized to a smaller width ([#1340](https://github.com/bdlukaa/fluent_ui/issues/1340))
 
 ## 4.14.0
 
@@ -35,6 +44,20 @@
 - refactor: Encourage usage of `EdgeInsetsDirectional` instead of `EdgeInsets`
 - **BREAKING CHANGE** refactor: Remove `BottomNavigationBar` and all its related widgets
 - **MINOR BREAKING** refactor: Remove `Brightness.isLight`, `Brightness.isDark` and `Brightness.opposite` extension methods. Use `switch` statements instead.
+  Before:
+  ```dart
+  final theme = FluentTheme.of(context);
+  final color = theme.brightness.isDark ? Colors.white : Colors.black;
+  ```
+
+  After:
+  ```dart
+  final theme = FluentTheme.of(context);
+  final color = switch (theme.brightness) {
+    Brightness.light => Colors.black,
+    Brightness.dark => Colors.white,
+  };
+  ```
 - feat: Add latest color resources from Microsoft UI XAML.
 - refactor(perf): Optimize animation handling in Scrollbar, NavigationView, Acrylic and buttons.
 - refactor(perf): Reduce calls to `setState` and frames scheduling in several widgets.

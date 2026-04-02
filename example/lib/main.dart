@@ -211,11 +211,21 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                 appTheme.mode = ThemeMode.light;
               }
             },
-            child: const Icon(WindowsIcons.lightbulb),
+            child: const Icon(WindowsIcons.lightbulb, size: 16),
           ),
         ),
         captionControls: const WindowButtons(),
         onDragStarted: !kIsWeb ? windowManager.startDragging : null,
+        onDoubleTap: !kIsWeb
+            ? () async {
+                final isMaximized = await windowManager.isMaximized();
+                if (isMaximized) {
+                  windowManager.restore();
+                } else {
+                  windowManager.maximize();
+                }
+              }
+            : null,
       ),
       pane: NavigationPane(
         selected: _index,
