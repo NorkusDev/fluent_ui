@@ -1,6 +1,14 @@
 ## [next]
 
+- feat: `MenuBar.overflowBehavior` ([#1337](https://github.com/bdlukaa/fluent_ui/pull/1337))
+  `MenuBar` now uses `RawMenuBar` under the hood.
+- feat: `Tooltip.enableTapToDismiss` and `Tooltip.onTriggered` ([#1338](https://github.com/bdlukaa/fluent_ui/pull/1338))
+  `Tooltip` now uses `RawTooltip` under the hood.
+
+## 4.16.0
+
 - refactor: Flutter 3.44.0 support
+- fix: `MenuBar` now doesn't throw "Duplicated Global Key" and/or Rendering exceptions when hovering on different `MenuBarItem`(s) with the flyout open ([#1334](https://github.com/bdlukaa/fluent_ui/issues/1334))
 - fix: `Tooltip` now correctly uses constructor-given style ((#1321)[https://github.com/bdlukaa/fluent_ui/pull/1321])
 - fix: Correctly apply `ButtonStyle.textStyle` to `Button`s content ([#1318](https://github.com/bdlukaa/fluent_ui/issues/1318))
 - fix: Correctly forward navigation view theme to flyout items ([#1325](https://github.com/bdlukaa/fluent_ui/issues/1325))
