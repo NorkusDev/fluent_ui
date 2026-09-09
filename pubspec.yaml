@@ -1,6 +1,6 @@
 name: fluent_ui
 description: Implements Microsoft's Windows User Interface in Flutter.
-version: 4.16.0
+version: 4.16.1
 homepage: https://bdlukaa.github.io/fluent_ui/#/
 repository: https://github.com/bdlukaa/fluent_ui
 issue_tracker: https://github.com/bdlukaa/fluent_ui/issues
@@ -31,7 +31,7 @@ dependencies:
   recase: ^4.1.0
 
   # Used on NumberBox
-  math_expressions: ^3.1.0
+  math_expressions: ^3.2.0
 
 dev_dependencies:
   flutter_test:

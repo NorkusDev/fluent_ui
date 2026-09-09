@@ -34,6 +34,7 @@ class _ComboBoxMenuPainter extends CustomPainter {
   _ComboBoxMenuPainter({
     required this.resize,
     required this.getSelectedItemOffset,
+    required this.scaledItemHeight,
     this.selectedIndex,
     Color borderColor = Colors.black,
     Color? backgroundColor,
@@ -53,19 +54,22 @@ class _ComboBoxMenuPainter extends CustomPainter {
   final int? selectedIndex;
   final Animation<double> resize;
   final ValueGetter<double> getSelectedItemOffset;
+  final double scaledItemHeight;
   final BoxPainter _painter;
 
   @override
   void paint(Canvas canvas, Size size) {
     final selectedItemOffset = getSelectedItemOffset();
+    final maxTopOffset = math.max(0.0, size.height - scaledItemHeight);
+    final minBottomOffset = math.min(scaledItemHeight, size.height);
     final top = Tween<double>(
-      begin: selectedItemOffset.clamp(0.0, size.height - kComboBoxItemHeight),
+      begin: selectedItemOffset.clamp(0.0, maxTopOffset),
       end: 0,
     );
 
     final bottom = Tween<double>(
-      begin: (top.begin! + kComboBoxItemHeight).clamp(
-        kComboBoxItemHeight,
+      begin: (top.begin! + scaledItemHeight).clamp(
+        minBottomOffset,
         size.height,
       ),
       end: size.height,
@@ -318,6 +322,7 @@ class _ComboBoxMenuState<T> extends State<_ComboBoxMenu<T>> {
             painter: _ComboBoxMenuPainter(
               selectedIndex: route.selectedIndex,
               resize: _resize,
+              scaledItemHeight: route.scaledItemHeight,
               // This offset is passed as a callback, not a value, because it must
               // be retrieved at paint time (after layout), not at build time.
               getSelectedItemOffset: () =>
@@ -330,6 +335,7 @@ class _ComboBoxMenuState<T> extends State<_ComboBoxMenu<T>> {
             child: ClipRRect(
               clipper: _ComboBoxResizeClipper(
                 resizeAnimation: _resize,
+                scaledItemHeight: route.scaledItemHeight,
                 getSelectedItemOffset: () =>
                     route.getItemOffset(route.selectedIndex ?? 0),
               ),
@@ -387,23 +393,27 @@ class _ComboBoxMenuState<T> extends State<_ComboBoxMenu<T>> {
 class _ComboBoxResizeClipper extends CustomClipper<RRect> {
   final Animation<double> resizeAnimation;
   final ValueGetter<double> getSelectedItemOffset;
+  final double scaledItemHeight;
 
   const _ComboBoxResizeClipper({
     required this.resizeAnimation,
     required this.getSelectedItemOffset,
+    required this.scaledItemHeight,
   });
 
   @override
   RRect getClip(Size size) {
     final selectedItemOffset = getSelectedItemOffset();
+    final maxTopOffset = math.max(0.0, size.height - scaledItemHeight);
+    final minBottomOffset = math.min(scaledItemHeight, size.height);
     final top = Tween<double>(
-      begin: selectedItemOffset.clamp(0.0, size.height - kComboBoxItemHeight),
+      begin: selectedItemOffset.clamp(0.0, maxTopOffset),
       end: 0,
     );
 
     final bottom = Tween<double>(
-      begin: (top.begin! + kComboBoxItemHeight).clamp(
-        kComboBoxItemHeight,
+      begin: (top.begin! + scaledItemHeight).clamp(
+        minBottomOffset,
         size.height,
       ),
       end: size.height,
@@ -443,7 +453,7 @@ class _ComboBoxMenuRouteLayout<T> extends SingleChildLayoutDelegate {
     //   -- https://material.io/design/components/menus.html#usage
     final double maxHeight = math.max(
       0,
-      constraints.maxHeight - 2 * kComboBoxItemHeight,
+      constraints.maxHeight - 2 * route.scaledItemHeight,
     );
     // The width of a menu should be at most the view width. This ensures that
     // the menu does not extend past the left and right edges of the screen.
@@ -528,10 +538,15 @@ class _ComboBoxRoute<T> extends PopupRoute<_ComboBoxRouteResult<T>> {
     required this.capturedThemes,
     required this.style,
     required this.acrylicEnabled,
+    required TextScaler textScaler,
     this.elevation = 16,
     this.barrierLabel,
     this.popupColor,
-  }) : itemHeights = List<double>.filled(items.length, kComboBoxItemHeight);
+  }) : scaledItemHeight = textScaler.scale(kComboBoxItemHeight),
+       itemHeights = List<double>.filled(
+         items.length,
+         textScaler.scale(kComboBoxItemHeight),
+       );
 
   final List<ComboBoxItem<T>> items;
   final EdgeInsetsGeometry padding;
@@ -543,6 +558,7 @@ class _ComboBoxRoute<T> extends PopupRoute<_ComboBoxRouteResult<T>> {
   final Color? popupColor;
   final bool acrylicEnabled;
 
+  final double scaledItemHeight;
   final List<double> itemHeights;
   ScrollController? scrollController;
 
@@ -609,7 +625,7 @@ class _ComboBoxRoute<T> extends PopupRoute<_ComboBoxRouteResult<T>> {
     double availableHeight,
     int index,
   ) {
-    final computedMaxHeight = availableHeight - 2.0 * kComboBoxItemHeight;
+    final computedMaxHeight = availableHeight - 2.0 * scaledItemHeight;
     // if (menuMaxHeight != null) {
     //   computedMaxHeight = math.min(computedMaxHeight, menuMaxHeight!);
     // }
@@ -623,7 +639,7 @@ class _ComboBoxRoute<T> extends PopupRoute<_ComboBoxRouteResult<T>> {
     // or bottom edge of the button.
     const topLimit = _kMenuItemBottomPadding;
     final double bottomLimit = math.max(
-      availableHeight - kComboBoxItemHeight,
+      availableHeight - scaledItemHeight,
       buttonBottom,
     );
 
@@ -788,18 +804,20 @@ class _ComboBoxItemContainer extends StatelessWidget {
         ? theme.resources.textFillColorSecondary
         : theme.resources.textFillColorPrimary;
 
+    final textScaler = MediaQuery.textScalerOf(context);
     final densityAdjustment = theme.visualDensity.baseSizeAdjustment.dy;
-    final adjustedItemHeight = (kComboBoxItemHeight + densityAdjustment).clamp(
+    final adjustedItemHeight =
+        (textScaler.scale(kComboBoxItemHeight) + densityAdjustment).clamp(
+          0.0,
+          double.infinity,
+        );
+    final itemHeight = adjustedItemHeight;
+    final buttonHeight = (adjustedItemHeight - _kMenuItemBottomPadding).clamp(
       0.0,
       double.infinity,
     );
     return Container(
-      height: hasPadding
-          ? adjustedItemHeight
-          : (adjustedItemHeight - _kMenuItemBottomPadding).clamp(
-              0.0,
-              double.infinity,
-            ),
+      height: hasPadding ? itemHeight : buttonHeight,
       alignment: AlignmentDirectional.centerStart,
       child: DefaultTextStyle.merge(
         style: TextStyle(color: foregroundColor),
@@ -1288,6 +1306,7 @@ class ComboBoxState<T> extends State<ComboBox<T>> {
         to: navigator.context,
       ),
       style: _textStyle(context)!,
+      textScaler: MediaQuery.textScalerOf(context),
       barrierLabel: FluentLocalizations.of(context).modalBarrierDismissLabel,
       popupColor: widget.popupColor,
     );

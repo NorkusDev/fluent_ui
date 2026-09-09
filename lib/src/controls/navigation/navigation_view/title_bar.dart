@@ -150,7 +150,7 @@ class TitleBar extends StatelessWidget {
         onPanEnd: (_) => onDragEnded?.call(),
         onPanCancel: () => onDragCancelled?.call(),
         onPanUpdate: (_) => onDragUpdated?.call(),
-        onDoubleTap: () => onDoubleTap?.call(),
+        onDoubleTap: onDoubleTap,
         child: ConstrainedBox(
           constraints: BoxConstraints.tightFor(
             // according to documentation, increase the size of the title bar if
